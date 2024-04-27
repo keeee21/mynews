@@ -2,7 +2,7 @@ import Link from 'next/link';
 
 export default function Home() {
   return (
-    <main className="flex flex-col items-center justify-between min-h-screen p-24">
+    <main className="flex flex-col items-center justify-between p-24">
       <h1 className="text-4xl font-bold mb-8">企業のRSSフィード</h1>
       <nav className="mb-8">
         <ul className="flex space-x-4">
