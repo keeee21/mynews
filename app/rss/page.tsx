@@ -67,7 +67,7 @@ const Page: React.FC = () => {
                 target="_blank"
                 rel="noopener noreferrer"
               >
-                ■ {item.title}
+                ■ {item.title}(<span className='text-gray-500'>{item.company}</span>)
               </a>
             </li>
           ))}
