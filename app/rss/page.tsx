@@ -9,6 +9,7 @@ interface RSSItem {
   title: string;
   link: string;
   company: string;
+  pubDate: string;
 }
 
 const PAGE_SIZE = 10;
@@ -67,6 +68,7 @@ const Page: React.FC = () => {
                 target="_blank"
                 rel="noopener noreferrer"
               >
+                {/* ◯日前　と出力したい */}
                 ■ {item.title}(<span className='text-gray-500'>{item.company}</span>)
               </a>
             </li>

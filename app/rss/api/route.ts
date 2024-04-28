@@ -8,6 +8,7 @@ interface RSSItem {
   title: string;
   link: string;
   company: string;
+  pubDate: string;
 }
 
 const PAGE_SIZE = 10;
@@ -38,6 +39,7 @@ export async function GET(request: Request) {
                 title: item.title[0],
                 link: item.link[0],
                 company: label,
+                pubDate: item.pubDate[0],
               }));
             } else if (result.rss && result.rss.channel && result.rss.channel[0].item) {
               // RSSフィードの場合の処理
@@ -46,6 +48,7 @@ export async function GET(request: Request) {
                 title: item.title[0],
                 link: typeof item.link[0] === 'string' ? item.link[0] : item.link[0]?.$.href || '',
                 company: label,
+                pubDate: item.pubDate[0],
               }));
             } else if (result.feed && result.feed.entry) {
               // Atomフィードの場合の処理
@@ -54,6 +57,7 @@ export async function GET(request: Request) {
                 title: item.title[0],
                 link: item.link[0]?.$.href || '',
                 company: label,
+                pubDate: item.published[0],
               }));
             }
 
@@ -67,8 +71,9 @@ export async function GET(request: Request) {
       console.error(`Error fetching RSS data for ${label}:`, error);
     }
   }
+  const sortedItems = rssList.sort((a, b) => new Date(b.pubDate).getTime() - new Date(a.pubDate).getTime());
 
-  return new NextResponse(JSON.stringify(rssList), {
+  return new NextResponse(JSON.stringify(sortedItems), {
     status: 200,
     headers: {
       'Content-Type': 'application/json',
