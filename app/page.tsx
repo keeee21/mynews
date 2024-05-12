@@ -1,5 +1,6 @@
 import type { Article } from '@prisma/client';
 import { formatDate } from 'lib/formatDate';
+import ErrorMessage from './ErrorMessage';
 
 async function getArticles(): Promise<Article[]> {
   const res = await fetch(`${process.env.NEXT_PUBLIC_API_ENDPOINT}`);
@@ -8,9 +9,20 @@ async function getArticles(): Promise<Article[]> {
 }
 
 export default async function Home() {
-  const articles = await getArticles();
+  let articles: Article[] = [];
+  let error: Error | null = null;
 
-  if (!articles) {
+  try {
+    articles = await getArticles();
+  } catch (e) {
+    error = e as Error;
+  }
+
+  if (error) {
+    return <ErrorMessage error={error} />;
+  }
+
+  if (!articles.length) {
     return <div>Loading...</div>;
   }
 
