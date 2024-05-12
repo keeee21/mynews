@@ -1,29 +1,41 @@
+'use client';
+
+import { useState, useEffect } from 'react';
 import type { Article } from '@prisma/client';
 import { formatDate } from 'lib/formatDate';
-import ErrorMessage from './ErrorMessage';
+import axios from 'axios';
 
 async function getArticles(): Promise<Article[]> {
-  const res = await fetch(`${process.env.NEXT_PUBLIC_API_ENDPOINT}`);
-  const data = await res.json();
-  return data.articles;
+  const res = await axios.get('./article/api/');
+  return res.data.articles;
 }
 
-export default async function Home() {
-  let articles: Article[] = [];
-  let error: Error | null = null;
+export default function Home() {
+  const [articles, setArticles] = useState<Article[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
 
-  try {
-    articles = await getArticles();
-  } catch (e) {
-    error = e as Error;
-  }
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        console.log('cccccccccc');
+        const fetchedArticles = await getArticles();
+        setArticles(fetchedArticles);
+      } catch (error) {
+        console.error('Error fetching articles:', error);
+      } finally {
+        setIsLoading(false);
+      }
+    };
 
-  if (error) {
-    return <ErrorMessage error={error} />;
+    fetchData();
+  }, []);
+
+  if (isLoading) {
+    return <div>Loading...</div>;
   }
 
   if (!articles.length) {
-    return <div>Loading...</div>;
+    return <div>No articles found.</div>;
   }
 
   const today = new Date();
@@ -51,7 +63,7 @@ export default async function Home() {
               className='my-2 underline underline-offset-2 decoration-gray-300 decoration-2'
             >
               <span className='font-bold'>
-                {formatDate(new Date(article.publishedAt))}{' '}
+                {formatDate(new Date(article.publishedAt))}
               </span>
               <a href={article.url} target='_blank' rel='noopener noreferrer'>
                 {article.title}
@@ -70,7 +82,7 @@ export default async function Home() {
               className='my-2 underline underline-offset-2 decoration-gray-300 decoration-2'
             >
               <span className='font-bold'>
-                {formatDate(new Date(article.publishedAt))}{' '}
+                {formatDate(new Date(article.publishedAt))}
               </span>
               <a href={article.url} target='_blank' rel='noopener noreferrer'>
                 {article.title}
@@ -89,7 +101,7 @@ export default async function Home() {
               className='my-2 underline underline-offset-2 decoration-gray-300 decoration-2'
             >
               <span className='font-bold'>
-                {formatDate(new Date(article.publishedAt))}{' '}
+                {formatDate(new Date(article.publishedAt))}
               </span>
               <a href={article.url} target='_blank' rel='noopener noreferrer'>
                 {article.title}
@@ -108,7 +120,7 @@ export default async function Home() {
               className='my-2 underline underline-offset-2 decoration-gray-300 decoration-2'
             >
               <span className='font-bold'>
-                {formatDate(new Date(article.publishedAt))}{' '}
+                {formatDate(new Date(article.publishedAt))}
               </span>
               <a href={article.url} target='_blank' rel='noopener noreferrer'>
                 {article.title}
