@@ -1,8 +1,4 @@
-import {
-  insertHatebu,
-  insertPodcast,
-  insertRss,
-} from 'app/insertData/api/service';
+import { insertHatebu, insertPodcast, insertRss } from 'app/cron/api/service';
 import type { NextRequest } from 'next/server';
 
 export async function GET(request: NextRequest) {
