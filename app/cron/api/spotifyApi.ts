@@ -1,8 +1,7 @@
 import axios from 'axios';
-import { env } from 'process';
 
-const clientId = env.SPOTIFY_CLIENT_ID;
-const clientSecret = env.SPOTIFY_CLIENT_SECRET;
+const clientId = process.env.SPOTIFY_CLIENT_ID;
+const clientSecret = process.env.SPOTIFY_CLIENT_SECRET;
 
 export async function getSpotifyToken(): Promise<string> {
   const tokenResponse = await axios({
