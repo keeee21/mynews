@@ -15,49 +15,53 @@ export async function insertHatebu() {
     publishedAt: string;
   };
 
-  const response = await axios.get<string>(
-    'https://b.hatena.ne.jp/hotentry/it.rss'
-  );
-  const xml = response.data;
-  const hatebus = await new Promise<RawItem[]>((resolve, reject) => {
-    parseString(xml, (err, result: any) => {
-      if (err) {
-        console.error('Error parsing XML:', err);
-        reject(err);
-      } else {
-        const items = result['rdf:RDF'].item.map((item: any) => ({
-          title: item.title[0],
-          url: item.link[0],
-          publishedAt: item['dc:date'],
-        }));
-        resolve(items);
-      }
-    });
-  });
-
-  // [dc:date]が、今日のものだけにフィルターする
-  const todayHatebus = hatebus.filter((hatebu) => {
-    const date = new Date(hatebu.publishedAt);
-    return date.toDateString() === new Date().toDateString();
-  });
-
-  if (todayHatebus.length > 0) {
-    // 今日公開されたものだけを保存する
-    const uniqueHatebus = hatebus.filter(
-      (hatebu, index, self) =>
-        index === self.findIndex((h) => h.url === hatebu.url)
+  try {
+    const response = await axios.get<string>(
+      'https://b.hatena.ne.jp/hotentry/it.rss'
     );
-
-    const savingData = uniqueHatebus.map((hatebu) => ({
-      title: hatebu.title,
-      url: hatebu.url,
-      publishedAt: new Date(hatebu.publishedAt),
-      sourceId: 2,
-    }));
-
-    await prisma.article.createMany({
-      data: savingData,
+    const xml = response.data;
+    const hatebus = await new Promise<RawItem[]>((resolve, reject) => {
+      parseString(xml, (err, result: any) => {
+        if (err) {
+          console.error('Error parsing XML:', err);
+          reject(err);
+        } else {
+          const items = result['rdf:RDF'].item.map((item: any) => ({
+            title: item.title[0],
+            url: item.link[0],
+            publishedAt: item['dc:date'],
+          }));
+          resolve(items);
+        }
+      });
     });
+
+    // [dc:date]が、今日のものだけにフィルターする
+    const todayHatebus = hatebus.filter((hatebu) => {
+      const date = new Date(hatebu.publishedAt);
+      return date.toDateString() === new Date().toDateString();
+    });
+
+    if (todayHatebus.length > 0) {
+      // 今日公開されたものだけを保存する
+      const uniqueHatebus = todayHatebus.filter(
+        (hatebu, index, self) =>
+          index === self.findIndex((h) => h.url === hatebu.url)
+      );
+
+      const savingData = uniqueHatebus.map((hatebu) => ({
+        title: hatebu.title,
+        url: hatebu.url,
+        publishedAt: new Date(hatebu.publishedAt),
+        sourceId: 2,
+      }));
+
+      await prisma.article.createMany({
+        data: savingData,
+      });
+    }
+  } catch (error) {
+    console.error('Error fetching Hatebu data:', error);
   }
 }
 
@@ -128,54 +132,35 @@ export async function insertRss() {
       });
 
       rssList.push(...items);
-
-      // 現在のRSSフィードの処理が完了したらrssListをクリアする
-      if (rssList.length > 0) {
-        const uniqueRss = rssList.filter(
-          (rss, index, self) =>
-            index === self.findIndex((r) => r.link === rss.link)
-        );
-
-        const savingData = uniqueRss.map((rss) => ({
-          title: rss.title,
-          url: rss.link,
-          publishedAt: new Date(rss.pubDate),
-          sourceId: 3,
-        }));
-
-        await prisma.article.createMany({
-          data: savingData,
-        });
-
-        rssList.length = 0; // rssListをクリアする
-      }
     } catch (error) {
       console.error(`Error fetching RSS data for ${label}:`, error);
     }
+  }
 
-    // [pubDate]が、今日のものだけにフィルターする
-    const todayRss = rssList.filter((rss) => {
-      const date = new Date(rss.pubDate);
-      return date.toDateString() === new Date().toDateString();
-    });
+  // 全てのRSSフィードの処理が完了した後に、rssListをフィルタリングして保存する
+  const todayRss = rssList.filter((rss) => {
+    const date = new Date(rss.pubDate);
+    return date.toDateString() === new Date().toDateString();
+  });
 
-    if (todayRss.length > 0) {
-      // 今日公開されたものだけを保存する
-      const uniqueRss = rssList.filter(
-        (rss, index, self) =>
-          index === self.findIndex((r) => r.link === rss.link)
-      );
+  if (todayRss.length > 0) {
+    const uniqueRss = todayRss.filter(
+      (rss, index, self) => index === self.findIndex((r) => r.link === rss.link)
+    );
 
-      const savingData = uniqueRss.map((rss) => ({
-        title: rss.title,
-        url: rss.link,
-        publishedAt: new Date(rss.pubDate),
-        sourceId: 3,
-      }));
+    const savingData = uniqueRss.map((rss) => ({
+      title: rss.title,
+      url: rss.link,
+      publishedAt: new Date(rss.pubDate),
+      sourceId: 3,
+    }));
 
+    try {
       await prisma.article.createMany({
         data: savingData,
       });
+    } catch (error) {
+      console.error('Error saving RSS articles:', error);
     }
   }
 }
@@ -187,55 +172,59 @@ export async function insertPodcast() {
     '32qgIhAHYnseWxiGyrFzSt', //ゆるコンピュータ科学ラジオ
   ];
 
-  const podcastShows = await Promise.all(
-    spotifyChannelIds.map(async (showId) => {
-      return await getShowInfo(showId);
-    })
-  );
-
-  const items = podcastShows.flatMap((show) => {
-    return show.episodes.items
-      .map((episode: any) => {
-        const releaseDate = episode.release_date;
-
-        if (!releaseDate) {
-          console.warn(
-            `Release date not available for episode: ${episode.name}`
-          );
-          return [];
-        }
-
-        return [
-          {
-            title: episode.name,
-            url: episode.external_urls.spotify,
-            publishedAt: new Date(releaseDate),
-          },
-        ];
+  try {
+    const podcastShows = await Promise.all(
+      spotifyChannelIds.map(async (showId) => {
+        return await getShowInfo(showId);
       })
-      .flat();
-  });
-
-  const todayPodcasts = items.filter((podcast) => {
-    const date = new Date(podcast.publishedAt);
-    return date.toDateString() === new Date().toDateString();
-  });
-
-  if (todayPodcasts.length > 0) {
-    const uniquePodcasts = items.filter(
-      (podcast, index, self) =>
-        index === self.findIndex((p) => p.url === podcast.url)
     );
 
-    const savingData = uniquePodcasts.map((podcast) => ({
-      title: podcast.title,
-      url: podcast.url,
-      publishedAt: podcast.publishedAt,
-      sourceId: 1,
-    }));
+    const items = podcastShows.flatMap((show) => {
+      return show.episodes.items
+        .map((episode: any) => {
+          const releaseDate = episode.release_date;
 
-    await prisma.article.createMany({
-      data: savingData,
+          if (!releaseDate) {
+            console.warn(
+              `Release date not available for episode: ${episode.name}`
+            );
+            return [];
+          }
+
+          return [
+            {
+              title: episode.name,
+              url: episode.external_urls.spotify,
+              publishedAt: new Date(releaseDate),
+            },
+          ];
+        })
+        .flat();
     });
+
+    const todayPodcasts = items.filter((podcast) => {
+      const date = new Date(podcast.publishedAt);
+      return date.toDateString() === new Date().toDateString();
+    });
+
+    if (todayPodcasts.length > 0) {
+      const uniquePodcasts = todayPodcasts.filter(
+        (podcast, index, self) =>
+          index === self.findIndex((p) => p.url === podcast.url)
+      );
+
+      const savingData = uniquePodcasts.map((podcast) => ({
+        title: podcast.title,
+        url: podcast.url,
+        publishedAt: podcast.publishedAt,
+        sourceId: 1,
+      }));
+
+      await prisma.article.createMany({
+        data: savingData,
+      });
+    }
+  } catch (error) {
+    console.error('Error fetching Podcast data:', error);
   }
 }

@@ -25,7 +25,7 @@ model MasterArticlesSource {
 model Article {
   id          Int    @id @default(autoincrement())
   title       String
-  url         String
+  url         String @unique
   source      MasterArticlesSource @relation(fields: [sourceId], references: [id])
   sourceId    Int
   publishedAt DateTime
