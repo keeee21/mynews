@@ -6,7 +6,6 @@ const prisma = new PrismaClient();
 
 export async function POST(request: Request) {
   const { password } = await request.json();
-  console.log(password, process.env.PASSWORD);
 
   if (password !== process.env.PASSWORD) {
     return NextResponse.json({ status: 'unauthorized' }, { status: 401 });

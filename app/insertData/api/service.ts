@@ -43,7 +43,12 @@ export async function insertHatebu() {
 
   if (todayHatebus.length > 0) {
     // 今日公開されたものだけを保存する
-    const savingData = todayHatebus.map((hatebu) => ({
+    const uniqueHatebus = hatebus.filter(
+      (hatebu, index, self) =>
+        index === self.findIndex((h) => h.url === hatebu.url)
+    );
+
+    const savingData = uniqueHatebus.map((hatebu) => ({
       title: hatebu.title,
       url: hatebu.url,
       publishedAt: new Date(hatebu.publishedAt),
@@ -123,6 +128,27 @@ export async function insertRss() {
       });
 
       rssList.push(...items);
+
+      // 現在のRSSフィードの処理が完了したらrssListをクリアする
+      if (rssList.length > 0) {
+        const uniqueRss = rssList.filter(
+          (rss, index, self) =>
+            index === self.findIndex((r) => r.link === rss.link)
+        );
+
+        const savingData = uniqueRss.map((rss) => ({
+          title: rss.title,
+          url: rss.link,
+          publishedAt: new Date(rss.pubDate),
+          sourceId: 3,
+        }));
+
+        await prisma.article.createMany({
+          data: savingData,
+        });
+
+        rssList.length = 0; // rssListをクリアする
+      }
     } catch (error) {
       console.error(`Error fetching RSS data for ${label}:`, error);
     }
@@ -135,7 +161,12 @@ export async function insertRss() {
 
     if (todayRss.length > 0) {
       // 今日公開されたものだけを保存する
-      const savingData = todayRss.map((rss) => ({
+      const uniqueRss = rssList.filter(
+        (rss, index, self) =>
+          index === self.findIndex((r) => r.link === rss.link)
+      );
+
+      const savingData = uniqueRss.map((rss) => ({
         title: rss.title,
         url: rss.link,
         publishedAt: new Date(rss.pubDate),
@@ -191,7 +222,12 @@ export async function insertPodcast() {
   });
 
   if (todayPodcasts.length > 0) {
-    const savingData = todayPodcasts.map((podcast) => ({
+    const uniquePodcasts = items.filter(
+      (podcast, index, self) =>
+        index === self.findIndex((p) => p.url === podcast.url)
+    );
+
+    const savingData = uniquePodcasts.map((podcast) => ({
       title: podcast.title,
       url: podcast.url,
       publishedAt: podcast.publishedAt,

@@ -3,7 +3,12 @@ const prisma = new PrismaClient();
 
 // 全ての記事を取得する
 export async function getAllArticles() {
-  const articles = await prisma.article.findMany();
+  // publishedAtでソートして記事を取得
+  const articles = await prisma.article.findMany({
+    orderBy: {
+      publishedAt: 'desc',
+    },
+  });
   return articles;
 }
 

@@ -17,7 +17,7 @@ export default function Home() {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        console.log('cccccccccc');
+        console.log('getArticles');
         const fetchedArticles = await getArticles();
         setArticles(fetchedArticles);
       } catch (error) {
