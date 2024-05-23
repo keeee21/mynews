@@ -41,9 +41,12 @@ export default function Home() {
   const today = new Date();
   today.setHours(0, 0, 0, 0);
 
+  const endOfToday = new Date(today);
+  endOfToday.setHours(23, 59, 59, 999);
+
   const todayArticles = articles.filter((article) => {
     const publishedAt = new Date(article.publishedAt);
-    return publishedAt >= today;
+    return publishedAt >= today && publishedAt <= endOfToday;
   });
 
   const podcastArticles = articles.filter((article) => article.sourceId === 1);
