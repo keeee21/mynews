@@ -1,34 +1,14 @@
 'use client';
 
-import { useState, useEffect } from 'react';
-import type { Article } from '@prisma/client';
-import { formatDate } from 'lib/formatDate';
-import axios from 'axios';
-
-async function getArticles(): Promise<Article[]> {
-  const res = await axios.get('./article/api/');
-  return res.data.articles;
-}
+import { useState } from 'react';
+import { useArticles } from 'hooks/useArticles';
+import { ArticleList } from 'components/ArticleList';
+import { ArticleFilter } from 'components/ArticleFilter';
+import { ArticleNav } from 'components/ArticleNav';
 
 export default function Home() {
-  const [articles, setArticles] = useState<Article[]>([]);
-  const [isLoading, setIsLoading] = useState(true);
-
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        console.log('getArticles');
-        const fetchedArticles = await getArticles();
-        setArticles(fetchedArticles);
-      } catch (error) {
-        console.error('Error fetching articles:', error);
-      } finally {
-        setIsLoading(false);
-      }
-    };
-
-    fetchData();
-  }, []);
+  const { articles, isLoading } = useArticles();
+  const [selectedDate, setSelectedDate] = useState<Date | null>(null);
 
   if (isLoading) {
     return <div>Loading...</div>;
@@ -49,88 +29,54 @@ export default function Home() {
     return publishedAt >= today && publishedAt <= endOfToday;
   });
 
-  const podcastArticles = articles.filter((article) => article.sourceId === 1);
-  const hatebuArticles = articles.filter((article) => article.sourceId === 2);
-  const rssArticles = articles.filter((article) => article.sourceId === 3);
+  let filteredArticles = articles;
+  if (selectedDate) {
+    const startOfSelectedDate = new Date(selectedDate);
+    startOfSelectedDate.setHours(0, 0, 0, 0);
+
+    const endOfSelectedDate = new Date(selectedDate);
+    endOfSelectedDate.setHours(23, 59, 59, 999);
+
+    filteredArticles = articles.filter((article) => {
+      const publishedAt = new Date(article.publishedAt);
+      return (
+        publishedAt >= startOfSelectedDate && publishedAt <= endOfSelectedDate
+      );
+    });
+  }
 
   return (
     <main className='min-h-screen p-12'>
       <div className='z-10 max-w-5xl w-full font-mono text-sm'>
-        <h1 className='text-xl font-bold bg-gray-600 text-white p-2'>
-          今日のNews
-        </h1>
-        <ul className='bg-white p-2'>
-          {todayArticles.map((article) => (
-            <li
-              key={article.id}
-              className='my-2 underline underline-offset-2 decoration-gray-300 decoration-2'
-            >
-              <span className='font-bold'>
-                {formatDate(new Date(article.publishedAt))}
-              </span>
-              <a href={article.url} target='_blank' rel='noopener noreferrer'>
-                {article.title}
-              </a>
-            </li>
-          ))}
-        </ul>
-
-        <h1 className='text-xl font-bold bg-gray-600 text-white p-2 mt-8'>
-          Podcast
-        </h1>
-        <ul className='bg-white p-2'>
-          {podcastArticles.map((article) => (
-            <li
-              key={article.id}
-              className='my-2 underline underline-offset-2 decoration-gray-300 decoration-2'
-            >
-              <span className='font-bold'>
-                {formatDate(new Date(article.publishedAt))}
-              </span>
-              <a href={article.url} target='_blank' rel='noopener noreferrer'>
-                {article.title}
-              </a>
-            </li>
-          ))}
-        </ul>
-
-        <h1 className='text-xl font-bold bg-gray-600 text-white p-2 mt-8'>
-          はてぶ
-        </h1>
-        <ul className='bg-white p-2'>
-          {hatebuArticles.map((article) => (
-            <li
-              key={article.id}
-              className='my-2 underline underline-offset-2 decoration-gray-300 decoration-2'
-            >
-              <span className='font-bold'>
-                {formatDate(new Date(article.publishedAt))}
-              </span>
-              <a href={article.url} target='_blank' rel='noopener noreferrer'>
-                {article.title}
-              </a>
-            </li>
-          ))}
-        </ul>
-
-        <h1 className='text-xl font-bold bg-gray-600 text-white p-2 mt-8'>
-          RSS
-        </h1>
-        <ul className='bg-white p-2'>
-          {rssArticles.map((article) => (
-            <li
-              key={article.id}
-              className='my-2 underline underline-offset-2 decoration-gray-300 decoration-2'
-            >
-              <span className='font-bold'>
-                {formatDate(new Date(article.publishedAt))}
-              </span>
-              <a href={article.url} target='_blank' rel='noopener noreferrer'>
-                {article.title}
-              </a>
-            </li>
-          ))}
-        </ul>
+        <ArticleFilter
+          selectedDate={selectedDate}
+          onDateChange={setSelectedDate}
+        />
+        <ArticleNav selectedDate={selectedDate} />
+        {!selectedDate && (
+          <ArticleList id='today' title='今日のNews' articles={todayArticles} />
+        )}
+        <ArticleList
+          id='podcast'
+          title='Podcast'
+          articles={filteredArticles.filter(
+            (article) => article.sourceId === 1
+          )}
+        />
+        <ArticleList
+          id='hatebu'
+          title='はてぶ'
+          articles={filteredArticles.filter(
+            (article) => article.sourceId === 2
+          )}
+        />
+        <ArticleList
+          id='rss'
+          title='RSS'
+          articles={filteredArticles.filter(
+            (article) => article.sourceId === 3
+          )}
+        />
       </div>
     </main>
   );
