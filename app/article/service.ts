@@ -1,4 +1,5 @@
 import { PrismaClient } from '@prisma/client';
+import { Article } from '../common/types';
 const prisma = new PrismaClient();
 
 // 全ての記事を取得する
@@ -42,9 +43,20 @@ export async function getArticlesBySourceId(sourceId: number) {
   return articles;
 }
 
-export async function saveArticles(articles: any[]) {
+export async function saveArticles(articles: Article[]) {
   try {
-    await prisma.article.createMany({ data: articles });
+    for (const article of articles) {
+      await prisma.article.upsert({
+        where: { url: article.url },
+        update: {},
+        create: {
+          title: article.title,
+          url: article.url,
+          publishedAt: article.publishedAt,
+          sourceId: article.sourceId,
+        },
+      });
+    }
   } catch (error) {
     console.error('Error saving articles:', error);
   }

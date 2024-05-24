@@ -10,3 +10,10 @@ export type RssArticle = {
   company: string;
   pubDate: string;
 };
+
+export type Article = {
+  title: string;
+  url: string;
+  publishedAt: Date;
+  sourceId: number;
+};
