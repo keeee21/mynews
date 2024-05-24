@@ -41,3 +41,11 @@ export async function getArticlesBySourceId(sourceId: number) {
   });
   return articles;
 }
+
+export async function saveArticles(articles: any[]) {
+  try {
+    await prisma.article.createMany({ data: articles });
+  } catch (error) {
+    console.error('Error saving articles:', error);
+  }
+}

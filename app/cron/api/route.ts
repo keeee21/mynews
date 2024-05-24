@@ -1,4 +1,6 @@
-import { insertHatebu, insertPodcast, insertRss } from 'app/cron/api/service';
+import { insertHatebu } from 'app/hatebu/service';
+import { insertPodcast } from 'app/podcast/service';
+import { insertRss } from 'app/rss/service';
 import type { NextRequest } from 'next/server';
 
 export async function GET(request: NextRequest) {
