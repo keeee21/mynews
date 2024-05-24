@@ -1,5 +1,5 @@
 import { getShowInfo } from './spotifyApi';
-import { removeDuplicates } from '../common/service';
+import { isToday, removeDuplicates } from '../common/service';
 import { saveArticles } from '../article/service';
 import { spotifyChannelIds } from '../../resources/spotifyChannelList';
 
@@ -17,7 +17,10 @@ export async function insertPodcast() {
       }))
     );
 
-    const uniquePodcasts = removeDuplicates(episodes, 'url');
+    const todayPodcasts = episodes.filter((podcast) =>
+      isToday(podcast.publishedAt)
+    );
+    const uniquePodcasts = removeDuplicates(todayPodcasts, 'url');
 
     const savingData = uniquePodcasts.map((podcast) => ({
       title: podcast.title,
