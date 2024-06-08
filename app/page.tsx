@@ -5,6 +5,7 @@ import { useArticles } from 'hooks/useArticles';
 import { ArticleList } from 'components/ArticleList';
 import { ArticleFilter } from 'components/ArticleFilter';
 import { ArticleNav } from 'components/ArticleNav';
+import { convertToJST } from 'lib/formatDate';
 
 export default function Home() {
   const { articles, isLoading } = useArticles();
@@ -18,6 +19,7 @@ export default function Home() {
     return <div>No articles found.</div>;
   }
 
+  // JSTの0時から開始する日付の設定
   const today = new Date();
   today.setHours(0, 0, 0, 0);
 
@@ -26,7 +28,8 @@ export default function Home() {
 
   const todayArticles = articles.filter((article) => {
     const publishedAt = new Date(article.publishedAt);
-    return publishedAt >= today && publishedAt <= endOfToday;
+    const jstPublishedAt = convertToJST(publishedAt);
+    return jstPublishedAt >= today && jstPublishedAt <= endOfToday;
   });
 
   let filteredArticles = articles;
@@ -39,8 +42,10 @@ export default function Home() {
 
     filteredArticles = articles.filter((article) => {
       const publishedAt = new Date(article.publishedAt);
+      const jstPublishedAt = convertToJST(publishedAt);
       return (
-        publishedAt >= startOfSelectedDate && publishedAt <= endOfSelectedDate
+        jstPublishedAt >= startOfSelectedDate &&
+        jstPublishedAt <= endOfSelectedDate
       );
     });
   }
