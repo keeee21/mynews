@@ -7,7 +7,9 @@ export type FeedInfo = {
   flags?: FEED_INFO_FLAG[];
 };
 
-const createFeedList = (feedInfoTuples: [label: string, url: string, flags?: FEED_INFO_FLAG[]][]) => {
+const createFeedList = (
+  feedInfoTuples: [label: string, url: string, flags?: FEED_INFO_FLAG[]][]
+) => {
   const feedInfoList: FeedInfo[] = [];
 
   for (const [label, url, flags] of feedInfoTuples) {
@@ -42,7 +44,10 @@ export const feedList: FeedInfo[] = createFeedList([
   ['Findy', 'https://tech.findy.co.jp/feed'],
   ['GMOアドパートナーズ', 'https://techblog.gmo-ap.jp/feed/'],
   ['GMOインターネット', 'https://developers.gmo.jp/feed/'],
-  ['GMOグループ研究開発本部', 'https://recruit.gmo.jp/engineer/jisedai/blog/feed/'],
+  [
+    'GMOグループ研究開発本部',
+    'https://recruit.gmo.jp/engineer/jisedai/blog/feed/',
+  ],
   ['GMOグローバルサイン・ホールディングス', 'https://tech.gmogshd.com/feed/'],
   ['GMOペパボ', 'https://tech.pepabo.com/feed.xml'],
   ['GMOリサーチ', 'https://gmor-sys.com/feed/'],
@@ -147,7 +152,11 @@ export const feedList: FeedInfo[] = createFeedList([
   ['サイバーエージェント', 'https://developers.cyberagent.co.jp/blog/feed/'],
   ['サイボウズ Necoチーム', 'https://zenn.dev/p/cybozu_neco/feed', [FLAG]],
   ['サイボウズ データチーム', 'https://zenn.dev/p/cybozu_data/feed', [FLAG]],
-  ['サイボウズ フロントエンド', 'https://zenn.dev/p/cybozu_frontend/feed', [FLAG]],
+  [
+    'サイボウズ フロントエンド',
+    'https://zenn.dev/p/cybozu_frontend/feed',
+    [FLAG],
+  ],
   ['サイボウズ 生産性向上チーム', 'https://zenn.dev/p/cybozu_ept/feed', [FLAG]],
   ['サイボウズ', 'https://blog.cybozu.io/feed'],
   ['サムザップ', 'https://tech.sumzap.co.jp/feed'],
@@ -160,14 +169,21 @@ export const feedList: FeedInfo[] = createFeedList([
   ['テックタッチ', 'https://techtouch.hatenablog.jp/feed'],
   ['テックファーム', 'https://www.techfirm.co.jp/blog/?feed=rss2'],
   ['テラーノベル', 'https://zenn.dev/p/tellernovel_inc/feed', [FLAG]],
-  ['チームラボ　フロントエンド班', 'https://zenn.dev/p/teamlab_fe/feed', [FLAG]],
+  [
+    'チームラボ　フロントエンド班',
+    'https://zenn.dev/p/teamlab_fe/feed',
+    [FLAG],
+  ],
   ['ドワンゴ', 'https://dwango.github.io/index.xml'],
   ['ドワンゴ教育サービス', 'https://blog.nnn.dev/feed'],
   ['ヌーラボ', 'https://nulab.com/ja/blog/categories/techblog/feed/'],
   ['ネクストビート', 'https://medium.com/feed/nextbeat-engineering'],
   ['ハコベル', 'https://zenn.dev/p/hacobell_dev/feed', [FLAG]],
   ['パーソルキャリア', 'https://techtekt.persol-career.co.jp/feed'],
-  ['パーソルプロセス＆テクノロジー', 'https://note.com/ppt_hr/m/md77242321979/rss'],
+  [
+    'パーソルプロセス＆テクノロジー',
+    'https://note.com/ppt_hr/m/md77242321979/rss',
+  ],
   ['ビザスク', 'https://tech.visasq.com/feed'],
   ['ビザスク', 'https://zenn.dev/p/visasq/feed', [FLAG]],
   ['ピクシブ', 'https://inside.pixiv.blog/feed'],
@@ -178,10 +194,16 @@ export const feedList: FeedInfo[] = createFeedList([
   ['メルカリ', 'https://engineering.mercari.com/blog/feed.xml'],
   ['モノタロウ', 'https://tech-blog.monotaro.com/feed'],
   ['ラクス', 'https://tech-blog.rakus.co.jp/feed'],
-  ['ラクスフロントエンドチーム', 'https://note.com/rakus_fe/m/m653605948abe/rss'],
+  [
+    'ラクスフロントエンドチーム',
+    'https://note.com/rakus_fe/m/m653605948abe/rss',
+  ],
   ['ラクスル', 'https://techblog.raksul.com/feed'],
   ['ランサーズ', 'https://engineer.blog.lancers.jp/feed/'],
-  ['リンクアンドモチベーション', 'https://link-and-motivation.hatenablog.com/feed'],
+  [
+    'リンクアンドモチベーション',
+    'https://link-and-motivation.hatenablog.com/feed',
+  ],
   ['リンコード', 'https://blog.linkode.co.jp/feed'],
   ['レアジョブ', 'https://rarejob-tech-dept.hatenablog.com/feed'],
   ['レコチョク', 'https://techblog.recochoku.jp/feed/atom'],
@@ -192,9 +214,13 @@ export const feedList: FeedInfo[] = createFeedList([
   ['一休', 'https://user-first.ikyu.co.jp/feed'],
   ['弁護士ドットコム', 'https://creators.bengo4.com/feed'],
   ['弥生', 'https://tech-blog.yayoi-kk.co.jp/feed'],
-  ['楽天コマース', encodeURI('https://commerce-engineer.rakuten.careers/feed/category/テック')],
+  [
+    '楽天コマース',
+    encodeURI('https://commerce-engineer.rakuten.careers/feed/category/テック'),
+  ],
   ['永和システムマネジメント', 'https://blog.agile.esm.co.jp/feed'],
   ['電通国際情報サービス', 'https://tech.dentsusoken.com/feed'],
   ['食べチョク', 'https://tech.tabechoku.com/feed'],
   ['食べログ', 'https://tech-blog.tabelog.com/feed'],
+  ['GIGAZINE', 'https://gigazine.net/news/rss_2.0'],
 ]);
