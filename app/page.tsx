@@ -20,7 +20,7 @@ export default function Home() {
   }
 
   // JSTの0時から開始する日付の設定
-  const today = new Date();
+  const today = convertToJST(new Date());
   today.setHours(0, 0, 0, 0);
 
   const endOfToday = new Date(today);
