@@ -5,6 +5,7 @@ import { useArticles } from 'hooks/useArticles';
 import { ArticleList } from 'components/ArticleList';
 import { ArticleFilter } from 'components/ArticleFilter';
 import { ArticleNav } from 'components/ArticleNav';
+import { getUtcNow, getStartOfUtcDay, getEndOfUtcDay } from 'lib/formatDate';
 
 export default function Home() {
   const { articles, isLoading } = useArticles();
@@ -18,40 +19,25 @@ export default function Home() {
     return <div>No articles found.</div>;
   }
 
-  // UTCの0時から開始する日付の設定
-  const today = new Date();
-  today.setUTCHours(0, 0, 0, 0);
+  // 現在のUTC日時を取得
+  const utcNow = getUtcNow();
 
-  const endOfToday = new Date(today);
-  endOfToday.setUTCHours(23, 59, 59, 999);
+  // UTCの0時から開始する日付を設定
+  const startOfToday = getStartOfUtcDay(utcNow);
+  const endOfToday = getEndOfUtcDay(utcNow);
 
   const todayArticles = articles.filter((article) => {
     const publishedAt = new Date(article.publishedAt);
-    publishedAt.setUTCHours(
-      publishedAt.getUTCHours(),
-      publishedAt.getUTCMinutes(),
-      publishedAt.getUTCSeconds(),
-      publishedAt.getUTCMilliseconds()
-    );
-    return publishedAt >= today && publishedAt <= endOfToday;
+    return publishedAt >= startOfToday && publishedAt <= endOfToday;
   });
 
   let filteredArticles = articles;
   if (selectedDate) {
-    const startOfSelectedDate = new Date(selectedDate);
-    startOfSelectedDate.setUTCHours(0, 0, 0, 0);
-
-    const endOfSelectedDate = new Date(selectedDate);
-    endOfSelectedDate.setUTCHours(23, 59, 59, 999);
+    const startOfSelectedDate = getStartOfUtcDay(new Date(selectedDate));
+    const endOfSelectedDate = getEndOfUtcDay(new Date(selectedDate));
 
     filteredArticles = articles.filter((article) => {
       const publishedAt = new Date(article.publishedAt);
-      publishedAt.setUTCHours(
-        publishedAt.getUTCHours(),
-        publishedAt.getUTCMinutes(),
-        publishedAt.getUTCSeconds(),
-        publishedAt.getUTCMilliseconds()
-      );
       return (
         publishedAt >= startOfSelectedDate && publishedAt <= endOfSelectedDate
       );
