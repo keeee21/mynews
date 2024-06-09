@@ -5,7 +5,6 @@ import { useArticles } from 'hooks/useArticles';
 import { ArticleList } from 'components/ArticleList';
 import { ArticleFilter } from 'components/ArticleFilter';
 import { ArticleNav } from 'components/ArticleNav';
-import { convertToJST } from 'lib/formatDate';
 
 export default function Home() {
   const { articles, isLoading } = useArticles();
@@ -19,33 +18,30 @@ export default function Home() {
     return <div>No articles found.</div>;
   }
 
-  // JSTの0時から開始する日付の設定
-  const today = convertToJST(new Date());
-  today.setHours(0, 0, 0, 0);
+  // UTCの0時から開始する日付の設定
+  const today = new Date();
+  today.setUTCHours(0, 0, 0, 0);
 
   const endOfToday = new Date(today);
-  endOfToday.setHours(23, 59, 59, 999);
+  endOfToday.setUTCHours(23, 59, 59, 999);
 
   const todayArticles = articles.filter((article) => {
     const publishedAt = new Date(article.publishedAt);
-    const jstPublishedAt = convertToJST(publishedAt);
-    return jstPublishedAt >= today && jstPublishedAt <= endOfToday;
+    return publishedAt >= today && publishedAt <= endOfToday;
   });
 
   let filteredArticles = articles;
   if (selectedDate) {
     const startOfSelectedDate = new Date(selectedDate);
-    startOfSelectedDate.setHours(0, 0, 0, 0);
+    startOfSelectedDate.setUTCHours(0, 0, 0, 0);
 
     const endOfSelectedDate = new Date(selectedDate);
-    endOfSelectedDate.setHours(23, 59, 59, 999);
+    endOfSelectedDate.setUTCHours(23, 59, 59, 999);
 
     filteredArticles = articles.filter((article) => {
       const publishedAt = new Date(article.publishedAt);
-      const jstPublishedAt = convertToJST(publishedAt);
       return (
-        jstPublishedAt >= startOfSelectedDate &&
-        jstPublishedAt <= endOfSelectedDate
+        publishedAt >= startOfSelectedDate && publishedAt <= endOfSelectedDate
       );
     });
   }
