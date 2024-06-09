@@ -27,6 +27,12 @@ export default function Home() {
 
   const todayArticles = articles.filter((article) => {
     const publishedAt = new Date(article.publishedAt);
+    publishedAt.setUTCHours(
+      publishedAt.getUTCHours(),
+      publishedAt.getUTCMinutes(),
+      publishedAt.getUTCSeconds(),
+      publishedAt.getUTCMilliseconds()
+    );
     return publishedAt >= today && publishedAt <= endOfToday;
   });
 
@@ -40,6 +46,12 @@ export default function Home() {
 
     filteredArticles = articles.filter((article) => {
       const publishedAt = new Date(article.publishedAt);
+      publishedAt.setUTCHours(
+        publishedAt.getUTCHours(),
+        publishedAt.getUTCMinutes(),
+        publishedAt.getUTCSeconds(),
+        publishedAt.getUTCMilliseconds()
+      );
       return (
         publishedAt >= startOfSelectedDate && publishedAt <= endOfSelectedDate
       );
