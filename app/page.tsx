@@ -73,13 +73,6 @@ export default function Home() {
           <ArticleList id='today' title='今日のNews' articles={todayArticles} />
         )}
         <ArticleList
-          id='podcast'
-          title='Podcast'
-          articles={filteredArticles.filter(
-            (article) => article.sourceId === 1
-          )}
-        />
-        <ArticleList
           id='hatebu'
           title='はてぶ'
           articles={filteredArticles.filter(
@@ -91,6 +84,13 @@ export default function Home() {
           title='RSS'
           articles={filteredArticles.filter(
             (article) => article.sourceId === 3
+          )}
+        />
+        <ArticleList
+          id='podcast'
+          title='Podcast'
+          articles={filteredArticles.filter(
+            (article) => article.sourceId === 1
           )}
         />
       </div>
