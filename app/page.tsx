@@ -5,7 +5,27 @@ import { useArticles } from 'hooks/useArticles';
 import { ArticleList } from 'components/ArticleList';
 import { ArticleFilter } from 'components/ArticleFilter';
 import { ArticleNav } from 'components/ArticleNav';
-import { getUtcNow, getStartOfUtcDay, getEndOfUtcDay } from 'lib/formatDate';
+
+interface Article {
+  id: number;
+  title: string;
+  url: string;
+  sourceId: number;
+  publishedAt: Date;
+  createdAt: Date;
+  updatedAt: Date;
+}
+
+const filterArticlesByDate = (
+  articles: Article[],
+  startDate: Date,
+  endDate: Date
+) => {
+  return articles.filter((article) => {
+    const publishedAt = new Date(article.publishedAt);
+    return publishedAt >= startDate && publishedAt <= endDate;
+  });
+};
 
 export default function Home() {
   const { articles, isLoading } = useArticles();
@@ -19,29 +39,26 @@ export default function Home() {
     return <div>No articles found.</div>;
   }
 
-  // 現在のUTC日時を取得
-  const utcNow = getUtcNow();
+  // 現在のユーザーのローカル日時を取得
+  const now = new Date();
+  const startOfToday = new Date(now.setHours(0, 0, 0, 0));
+  const endOfToday = new Date(now.setHours(23, 59, 59, 999));
 
-  // UTCの0時から開始する日付を設定
-  const startOfToday = getStartOfUtcDay(utcNow);
-  const endOfToday = getEndOfUtcDay(utcNow);
-
-  const todayArticles = articles.filter((article) => {
-    const publishedAt = new Date(article.publishedAt);
-    return publishedAt >= startOfToday && publishedAt <= endOfToday;
-  });
+  const todayArticles = filterArticlesByDate(
+    articles,
+    startOfToday,
+    endOfToday
+  );
 
   let filteredArticles = articles;
   if (selectedDate) {
-    const startOfSelectedDate = getStartOfUtcDay(new Date(selectedDate));
-    const endOfSelectedDate = getEndOfUtcDay(new Date(selectedDate));
-
-    filteredArticles = articles.filter((article) => {
-      const publishedAt = new Date(article.publishedAt);
-      return (
-        publishedAt >= startOfSelectedDate && publishedAt <= endOfSelectedDate
-      );
-    });
+    const startOfSelectedDate = new Date(selectedDate.setHours(0, 0, 0, 0));
+    const endOfSelectedDate = new Date(selectedDate.setHours(23, 59, 59, 999));
+    filteredArticles = filterArticlesByDate(
+      articles,
+      startOfSelectedDate,
+      endOfSelectedDate
+    );
   }
 
   return (
