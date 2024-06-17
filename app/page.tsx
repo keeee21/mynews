@@ -16,14 +16,19 @@ interface Article {
   updatedAt: Date;
 }
 
+const convertToLocalDate = (date: Date) => {
+  const localDate = new Date(date.getTime() - date.getTimezoneOffset() * 60000);
+  return localDate;
+};
+
 const filterArticlesByDate = (
   articles: Article[],
   startDate: Date,
   endDate: Date
 ) => {
   return articles.filter((article) => {
-    const publishedAt = new Date(article.publishedAt);
-    return publishedAt >= startDate && publishedAt <= endDate;
+    const publishedAtLocal = convertToLocalDate(new Date(article.publishedAt));
+    return publishedAtLocal >= startDate && publishedAtLocal <= endDate;
   });
 };
 
