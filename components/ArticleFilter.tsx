@@ -1,4 +1,5 @@
 import React from 'react';
+import { Button } from './Button';
 
 type ArticleFilterProps = {
   selectedDate: Date | null;
@@ -29,14 +30,7 @@ export const ArticleFilter: React.FC<ArticleFilterProps> = ({
           className='border border-gray-300 rounded-md px-2 py-1'
         />
       </div>
-      {selectedDate && (
-        <button
-          onClick={handleClearClick}
-          className='bg-gray-200 text-gray-700 px-2 py-1 rounded-md hover:bg-gray-300'
-        >
-          Clear
-        </button>
-      )}
+      {selectedDate && <Button onClick={handleClearClick}>Clear</Button>}
     </div>
   );
 };
