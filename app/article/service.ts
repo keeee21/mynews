@@ -1,5 +1,5 @@
 import { PrismaClient } from '@prisma/client';
-import { Article } from '../common/types';
+import { Article } from '@/app/common/types';
 const prisma = new PrismaClient();
 
 // 全ての記事を取得する

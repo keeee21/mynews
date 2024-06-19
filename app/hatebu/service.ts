@@ -1,7 +1,7 @@
 import axios from 'axios';
-import { parseXml, isToday, removeDuplicates } from '../common/service';
-import { saveArticles } from '../article/service';
-import type { HatebuArticle } from '../common/types';
+import { parseXml, isToday, removeDuplicates } from '@/app/common/service';
+import { saveArticles } from '@/app/article/service';
+import type { HatebuArticle } from '@/app/common/types';
 
 export async function insertHatebu() {
   try {

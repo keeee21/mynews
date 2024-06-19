@@ -1,7 +1,7 @@
 import { getShowInfo } from './spotifyApi';
-import { isToday, removeDuplicates } from '../common/service';
-import { saveArticles } from '../article/service';
-import { spotifyChannelIds } from '../../resources/spotifyChannelList';
+import { isToday, removeDuplicates } from '@/app/common/service';
+import { saveArticles } from '@/app/article/service';
+import { spotifyChannelIds } from '@/resources/spotifyChannelList';
 
 export async function insertPodcast() {
   try {

@@ -1,6 +1,6 @@
 import React from 'react';
 import type { Article } from '@prisma/client';
-import { formatDate } from 'lib/formatDate';
+import { formatDate } from '@/lib/formatDate';
 
 type SectionProps = {
   id: string;

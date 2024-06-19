@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import type { Article } from '@prisma/client';
-import { getArticles } from 'app/api';
+import { getArticles } from '@/app/api';
 
 export function useArticles() {
   const [articles, setArticles] = useState<Article[]>([]);

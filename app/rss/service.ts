@@ -1,8 +1,8 @@
 import axios from 'axios';
-import { parseXml, isToday, removeDuplicates } from '../common/service';
-import { saveArticles } from '../article/service';
-import type { RssArticle } from '../common/types';
-import { feedList, FLAG } from 'resources/feedList';
+import { parseXml, isToday, removeDuplicates } from '@/app/common/service';
+import { saveArticles } from '@/app/article/service';
+import type { RssArticle } from '@/app/common/types';
+import { feedList, FLAG } from '@/resources/feedList';
 
 export async function insertRss() {
   const rssArticles: RssArticle[] = [];

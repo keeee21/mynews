@@ -1,10 +1,10 @@
 'use client';
 
 import { useState } from 'react';
-import { useArticles } from 'hooks/useArticles';
-import { Section } from '../components/Section';
-import { ArticleFilter } from 'components/ArticleFilter';
-import { ArticleNav } from 'components/ArticleNav';
+import { useArticles } from '@/hooks/useArticles';
+import { Section } from '@/components/Section';
+import { ArticleFilter } from '@/components/ArticleFilter';
+import { ArticleNav } from '@/components/ArticleNav';
 
 interface Article {
   id: number;
