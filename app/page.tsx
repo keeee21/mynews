@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 import { useArticles } from 'hooks/useArticles';
-import { ArticleList } from 'components/ArticleList';
+import { Section } from '../components/Section';
 import { ArticleFilter } from 'components/ArticleFilter';
 import { ArticleNav } from 'components/ArticleNav';
 
@@ -75,23 +75,23 @@ export default function Home() {
         />
         <ArticleNav selectedDate={selectedDate} />
         {!selectedDate && (
-          <ArticleList id='today' title='今日のNews' articles={todayArticles} />
+          <Section id='today' title='今日のNews' articles={todayArticles} />
         )}
-        <ArticleList
+        <Section
           id='hatebu'
           title='はてぶ'
           articles={filteredArticles.filter(
             (article) => article.sourceId === 2
           )}
         />
-        <ArticleList
+        <Section
           id='rss'
           title='RSS'
           articles={filteredArticles.filter(
             (article) => article.sourceId === 3
           )}
         />
-        <ArticleList
+        <Section
           id='podcast'
           title='Podcast'
           articles={filteredArticles.filter(
