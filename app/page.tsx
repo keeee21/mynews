@@ -3,8 +3,8 @@
 import { useState } from 'react';
 import { useArticles } from '@/hooks/useArticles';
 import { Section } from '@/components/Section';
-import { ArticleFilter } from '@/components/ArticleFilter';
 import { ArticleNav } from '@/components/ArticleNav';
+import { DateFilter } from '@/components/DateFilter';
 
 interface Article {
   id: number;
@@ -69,7 +69,7 @@ export default function Home() {
   return (
     <main className='min-h-screen p-12'>
       <div className='z-10 max-w-5xl w-full font-mono text-sm'>
-        <ArticleFilter
+        <DateFilter
           selectedDate={selectedDate}
           onDateChange={setSelectedDate}
         />

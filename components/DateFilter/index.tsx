@@ -1,15 +1,12 @@
 import React from 'react';
-import { Button } from './Button';
+import { Button } from '../Button';
 
-type ArticleFilterProps = {
+type Props = {
   selectedDate: Date | null;
   onDateChange: (date: Date | null) => void;
 };
 
-export const ArticleFilter: React.FC<ArticleFilterProps> = ({
-  selectedDate,
-  onDateChange,
-}) => {
+export const DateFilter: React.FC<Props> = ({ selectedDate, onDateChange }) => {
   const handleClearClick = () => {
     onDateChange(null);
   };
