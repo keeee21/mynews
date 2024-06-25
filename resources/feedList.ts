@@ -223,4 +223,24 @@ export const feedList: FeedInfo[] = createFeedList([
   ['食べチョク', 'https://tech.tabechoku.com/feed'],
   ['食べログ', 'https://tech-blog.tabelog.com/feed'],
   ['GIGAZINE', 'https://gigazine.net/news/rss_2.0'],
+  ['Zennの「LLM」のフィード', 'https://zenn.dev/topics/llm/feed'],
+  ['TECH BLOG | 株式会社AI Shift', 'https://www.ai-shift.co.jp/techblog/feed'],
+  ['LLMタグが付けられた新着記事 - Qiita', 'https://qiita.com/tags/llm/feed'],
+  ['AIタグが付けられた新着記事 - Qiita', 'https://qiita.com/tags/ai/feed'],
+  [
+    '機械学習タグが付けられた新着記事 - Qiita',
+    'https://qiita.com/tags/機械学習/feed',
+  ],
+  ['Zennの「AI」のフィード', 'https://zenn.dev/topics/ai/feed'],
+  ['Zennの「データ分析」のフィード', 'https://zenn.dev/topics/データ分析/feed'],
+  [
+    'データ分析タグが付けられた新着記事 - Qiita',
+    'https://qiita.com/tags/データ分析/feed',
+  ],
+  ['AI News', 'https://artificialintelligence-news.com/feed'],
+  [
+    'MIT News - Machine learning',
+    'https://news.mit.edu/topic/mitmachine-learning-rss.xml',
+  ],
+  ['Google AI Blog', 'http://feeds.feedburner.com/blogspot/gJZg'],
 ]);
