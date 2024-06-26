@@ -5,6 +5,7 @@ import { useArticles } from '@/hooks/useArticles';
 import { Section } from '@/components/Section';
 import { ArticleNav } from '@/components/ArticleNav';
 import { DateFilter } from '@/components/DateFilter';
+import { ARTICLE_SOURCES } from '@/consts/articleSouece';
 
 interface Article {
   id: number;
@@ -81,21 +82,21 @@ export default function Home() {
           id='hatebu'
           title='はてぶ'
           articles={filteredArticles.filter(
-            (article) => article.sourceId === 2
+            (article) => article.sourceId === ARTICLE_SOURCES.HATEBU.id
           )}
         />
         <Section
           id='rss'
           title='RSS'
           articles={filteredArticles.filter(
-            (article) => article.sourceId === 3
+            (article) => article.sourceId === ARTICLE_SOURCES.RSS.id
           )}
         />
         <Section
           id='podcast'
           title='Podcast'
           articles={filteredArticles.filter(
-            (article) => article.sourceId === 1
+            (article) => article.sourceId === ARTICLE_SOURCES.PODCAST.id
           )}
         />
       </div>
