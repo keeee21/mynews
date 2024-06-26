@@ -1,5 +1,6 @@
+import { insertHatebu } from '@/app/hatebu/service';
 import { insertPodcast } from '@/app/podcast/service';
-
+import { insertRss } from '@/app/rss/service';
 import type { NextRequest } from 'next/server';
 
 export async function GET(request: NextRequest) {
@@ -11,7 +12,9 @@ export async function GET(request: NextRequest) {
     });
   }
 
+  await insertRss();
   await insertPodcast();
+  await insertHatebu();
 
   return Response.json({ success: true });
 }
