@@ -1,32 +1,39 @@
-import { getShowInfo } from './spotifyApi';
-import { isToday, removeDuplicates } from '@/app/common/service';
-import { saveArticles } from '@/app/article/service';
+import { getShowEpisodes } from './spotifyApi';
+import { removeDuplicates } from '@/app/common/service';
+import { saveArticles, getExistingEpisodeUrls } from '@/app/article/service';
 import { spotifyChannelIds } from '@/resources/spotifyChannelList';
+import { ARTICLE_SOURCES } from '@/consts/articleSouece';
 
 export async function insertPodcast() {
   try {
-    const podcastShows = await Promise.all(
-      spotifyChannelIds.map((showId) => getShowInfo(showId))
+    const existingEpisodeUrls = await getExistingEpisodeUrls();
+
+    const podcastEpisodes = await Promise.all(
+      spotifyChannelIds.map((showId) => getShowEpisodes(showId))
     );
 
-    const episodes = podcastShows.flatMap((show) =>
-      show.episodes.items.map((episode: any) => ({
+    const episodes = podcastEpisodes.flatMap((episodes) =>
+      episodes.map((episode: any) => ({
         title: episode.name,
         url: episode.external_urls.spotify,
         publishedAt: new Date(episode.release_date),
       }))
     );
 
-    const todayPodcasts = episodes.filter((podcast) =>
-      isToday(podcast.publishedAt)
+    const newEpisodes = episodes.filter(
+      (episode) => !existingEpisodeUrls.includes(episode.url)
     );
-    const uniquePodcasts = removeDuplicates(todayPodcasts, 'url');
+
+    // const todayPodcasts = newEpisodes.filter((podcast) =>
+    //   isToday(podcast.publishedAt)
+    // );
+    const uniquePodcasts = removeDuplicates(newEpisodes, 'url');
 
     const savingData = uniquePodcasts.map((podcast) => ({
       title: podcast.title,
       url: podcast.url,
       publishedAt: podcast.publishedAt,
-      sourceId: 1,
+      sourceId: ARTICLE_SOURCES.PODCAST.id,
     }));
 
     await saveArticles(savingData);

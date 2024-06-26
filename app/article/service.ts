@@ -1,5 +1,6 @@
 import { PrismaClient } from '@prisma/client';
 import { Article } from '@/app/common/types';
+import { ARTICLE_SOURCES } from '@/consts/articleSouece';
 const prisma = new PrismaClient();
 
 // 全ての記事を取得する
@@ -60,4 +61,17 @@ export async function saveArticles(articles: Article[]) {
   } catch (error) {
     console.error('Error saving articles:', error);
   }
+}
+
+export async function getExistingEpisodeUrls(): Promise<string[]> {
+  const result = await prisma.article.findMany({
+    where: {
+      sourceId: ARTICLE_SOURCES.PODCAST.id,
+    },
+    select: {
+      url: true,
+    },
+  });
+
+  return result.map((article) => article.url);
 }

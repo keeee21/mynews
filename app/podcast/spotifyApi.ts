@@ -19,16 +19,16 @@ export async function getSpotifyToken(): Promise<string> {
   return tokenResponse.data.access_token;
 }
 
-export async function getShowInfo(showId: string) {
+export async function getShowEpisodes(showId: string, limit = 50) {
   const token = await getSpotifyToken();
 
-  const showResponse = await axios({
+  const episodesResponse = await axios({
     method: 'get',
-    url: `https://api.spotify.com/v1/shows/${showId}`,
+    url: `https://api.spotify.com/v1/shows/${showId}/episodes?limit=${limit}`,
     headers: {
       Authorization: `Bearer ${token}`,
     },
   });
 
-  return showResponse.data;
+  return episodesResponse.data.items;
 }
