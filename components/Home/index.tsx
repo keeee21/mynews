@@ -3,9 +3,7 @@
 import { useState, useEffect } from 'react';
 import { useArticles } from '@/hooks/useArticles';
 import { Section } from '@/components/Section';
-import { ArticleNav } from '@/components/ArticleNav';
 import { DateFilter } from '@/components/DateFilter';
-import { ARTICLE_SOURCES } from '@/consts/articleSouece';
 import type { Article } from '@prisma/client';
 
 interface HomeProps {
@@ -92,31 +90,10 @@ export default function Home({ initialArticles }: HomeProps) {
           selectedDate={selectedDate}
           onDateChange={setSelectedDate}
         />
-        <ArticleNav selectedDate={selectedDate} />
         {!selectedDate && (
-          <Section id='today' title='今日のNews' articles={todayArticles} />
+          <Section id='today' title='Today News' articles={todayArticles} />
         )}
-        <Section
-          id='hatebu'
-          title='はてぶ'
-          articles={filteredArticles.filter(
-            (article) => article.sourceId === ARTICLE_SOURCES.HATEBU.id
-          )}
-        />
-        <Section
-          id='rss'
-          title='RSS'
-          articles={filteredArticles.filter(
-            (article) => article.sourceId === ARTICLE_SOURCES.RSS.id
-          )}
-        />
-        <Section
-          id='podcast'
-          title='Podcast'
-          articles={filteredArticles.filter(
-            (article) => article.sourceId === ARTICLE_SOURCES.PODCAST.id
-          )}
-        />
+        <Section id='articles' title='Articles' articles={filteredArticles} />
       </div>
     </main>
   );
