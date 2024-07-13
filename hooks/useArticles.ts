@@ -1,25 +1,15 @@
-import { useState, useEffect } from 'react';
-import type { Article } from '@prisma/client';
-import { getArticles } from '@/app/api';
+import useSWR from 'swr';
+
+const fetcher = (url: string) => fetch(url).then((res) => res.json());
 
 export function useArticles() {
-  const [articles, setArticles] = useState<Article[]>([]);
-  const [isLoading, setIsLoading] = useState(true);
+  const { data, error } = useSWR('/api/articles', fetcher, {
+    refreshInterval: 60000, // 60秒ごとに再フェッチ
+  });
 
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const fetchedArticles = await getArticles();
-        setArticles(fetchedArticles);
-      } catch (error) {
-        console.error('Error fetching articles:', error);
-      } finally {
-        setIsLoading(false);
-      }
-    };
-
-    fetchData();
-  }, []);
-
-  return { articles, isLoading };
+  return {
+    articles: data ? data.articles : [],
+    isLoading: !error && !data,
+    isError: error,
+  };
 }
