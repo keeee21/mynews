@@ -5,6 +5,8 @@ import { useArticles } from '@/hooks/useArticles';
 import { Section } from '@/components/Section';
 import { DateFilter } from '@/components/DateFilter';
 import type { Article } from '@prisma/client';
+import { useSession } from 'next-auth/react';
+import { Login } from '../Login';
 
 interface HomeProps {
   initialArticles: Article[];
@@ -27,6 +29,7 @@ const filterArticlesByDate = (
 };
 
 export default function Home({ initialArticles }: HomeProps) {
+  const { status } = useSession();
   const { articles: fetchedArticles, isLoading } = useArticles();
   const [articles, setArticles] = useState<Article[]>(initialArticles);
   const [selectedDate, setSelectedDate] = useState<Date | null>(null);
@@ -36,6 +39,10 @@ export default function Home({ initialArticles }: HomeProps) {
       setArticles(fetchedArticles);
     }
   }, [fetchedArticles]);
+
+  if (status !== 'authenticated') {
+    return <Login />;
+  }
 
   if (isLoading && articles.length === 0) {
     return <div>Loading...</div>;
