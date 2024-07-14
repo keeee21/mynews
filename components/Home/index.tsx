@@ -35,7 +35,7 @@ export default function Home({ initialArticles }: HomeProps) {
   const [selectedDate, setSelectedDate] = useState<Date | null>(null);
 
   useEffect(() => {
-    if (fetchedArticles.length > 0) {
+    if (fetchedArticles && fetchedArticles.length > 0) {
       setArticles(fetchedArticles);
     }
   }, [fetchedArticles]);
