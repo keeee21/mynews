@@ -13,11 +13,13 @@ export async function insertPodcast() {
     );
 
     const episodes = podcastEpisodes.flatMap((episodes) =>
-      episodes.map((episode: any) => ({
-        title: episode.name,
-        url: episode.external_urls.spotify,
-        publishedAt: new Date(episode.release_date),
-      }))
+      episodes
+        .filter((episode: any) => episode !== null)
+        .map((episode: any) => ({
+          title: episode.name,
+          url: episode.external_urls.spotify,
+          publishedAt: new Date(episode.release_date),
+        }))
     );
 
     const newEpisodes = episodes.filter(
